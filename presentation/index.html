@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Designing &amp; Building an intercative CFD - Chris Argyriadis</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/moon.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+                    Designing &amp; Building an interactive
+                    <h2>Customer Facing Display</h2>
+                    <small>brought to you by<br/>
+                        <a
+                            href="https://www.linkedin.com/in/chris-a-b25302152/"
+                            title="LinkedIn profile">Chris Argyriadis</a>
+                    </small>
+                </section>
+				<section>
+                    <h2>What's a <em>customer-facing display</em>?</h2>
+                    <img src="img/pos-with-cfd-spin.gif"/>
+                </section>
+                <section>
+                    <h2>Business Requirements</h2>
+                    <p>While at register, customers should:
+                    <ul>
+                        <li class="fragment">view promotion material</li>
+                        <li class="fragment">review order details (total, discounts, ...)</li>
+                        <li class="fragment">enter tip and e-sign voucher for <abbr title="credit card">cc</abbr> payments</li>
+                    </ul>
+                    <p class="fragment fade-up">Also make sure we farewell customer &#128075;</p>
+                </section>
+                <section>
+                    <h2>Use Case Diagram</h2>
+                    <!--<img src="https://yuml.me/3be9e4b4.svg"
+                        style="background-color:white"/>-->
+                    <img src="http://yuml.me/diagram/plain/usecase/[Cashier]-(Enter Order),(Enter Order)>(Add Items),(Enter Order)>(Place Order),(Pay Order)<(Credit Card Payment),(Pay Order),(Review Order)-(Enter Order),[Customer]-(Review Order),[Customer]-(Pay Order),(Credit Card Payment)>(Add Tip),(Credit Card Payment)>(eSign Voucher)"
+                                        style="background-color:white" />
+                </section>
+                <section>
+                    <h2>Hardware implementation</h2>
+                    <ul>
+                        <li>mountable <u>touchscren</u> display</li>
+                        <li><abbr title="Customer Facing Display">CFD</abbr> app runningt on POS host</li>
+                        <li>available as secondary display</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Front-end</h3>
+                    <ul>
+                        <li>Fullscreen embdeded browser</li>
+                        <li>Angualr Single Page Application</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Back-end</h3>
+                    <ul>
+                        <li>WebSocket API with <abbr title="Simple Text Oriented Messaging Protocol">STOMP</abbr></li>
+                        <li>Spring framework</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>System Overview</h2>
+                    <pre>
+┌─────────────────┐ ┌───────────────────────────┐
+│                 │ │                           │
+│                 │ │                           │
+│     Register    │ │  Customer-facing display  │
+│                 │ │                           │
+│                 │ │                           │
+└─────────┬───────┘ └─────────▲──────────┬──────┘
+          │                   │          │
+          │                   │          │
+          │    Order Update   │          │
+          │       Events      │          │
+          │                   │          │Tip Entered
+          │                   │          │
+          │                   │          │Signed
+          │                   │          │
+       ┌──▼────────────────┐  │          │
+       │                   ├──┘          │
+       │  Web Socket API   │             │
+       │      STOMP        │             │
+       │ /topic/<register> │◄────────────┘
+       │                   │
+       └───────────────────┘
+                    </pre>
+                    <medium>Do you identify a pattern?</medium>
+                </section>
+                <section>
+                    <h2>Events</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event</td>
+                                <th>Register</td>
+                                <th>CFD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>order created</td>
+                                <td><center>X</center></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>order placed</td>
+                                <td><center>X</center></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>order cleared</td>
+                                <td><center>X</center></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>payment</td>
+                                <td><center>X</center></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>tip entered</td>
+                                <td>&nbsp;</td>
+                                <td><center>X</center></td>
+                            </tr>
+                            <tr>
+                                <td>voucher signed</td>
+                                <td>&nbsp;</td>
+                                <td><center>X</center></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <h2>Finite-State Machine</h2>
+                    <img src="img/state-diagram.svg" style="background-color:
+                              white" />
+                </section>
+
+                <section>
+                    <h1>Questions?</h1>
+                </section>
+
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/zoom/zoom.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+                plantuml: {
+                    serverPath: 'https://plantuml.example.com/plantuml/svg/'
+                },
+				plugins: [ RevealZoom, RevealNotes ],
+                dependencies: [
+                  { src: '//cdn.jsdelivr.net/npm/reveal-plantuml' }
+                ]
+			});
+            mermaid.initialize({startOnLoad:true});
+		</script>
+	</body>
+</html>
