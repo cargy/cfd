@@ -5,7 +5,5 @@
   <a href="https://slides.com/"><img src="https://s3.amazonaws.com/static.slid.es/images/slides-github-banner-320x40.png?1" alt="Slides" width="160" height="20"></a>
 </p>
 
-<h1>Customer Facing display implementation</h1>
-
-## Presentation
+## Info
 That's a technical overview of the architecture of a customer facing display. [revealjs presentation](https://cargy.github.io/cfd).
