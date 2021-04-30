@@ -5,4 +5,4 @@
 </p>
 
 ## Info
-That's a technical overview of the architecture of a customer facing display. [revealjs presentation](https://cargy.github.io/cfd).
+That's a technical overview of the architecture of a customer facing display. Here is the [revealjs presentation](https://cargy.github.io/cfd).
